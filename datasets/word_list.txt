@@ -1,0 +1,10 @@
+apple
+microscope
+volcano
+algorithm
+cold
+galaxy
+enzyme
+car
+virus
+cell

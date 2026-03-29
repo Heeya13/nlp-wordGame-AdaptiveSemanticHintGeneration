@@ -1,0 +1,104 @@
+{
+  "apple": {
+    "domain": "agriculture",
+    "category": "fruit",
+    "function": "food",
+    "context": ["eaten", "orchards", "farming", "nutrition"]
+  },
+
+  "microscope": {
+    "domain": "biology",
+    "category": "scientific instrument",
+    "function": "observe tiny objects",
+    "context": ["laboratory", "cells", "magnification", "research"]
+  },
+
+  "volcano": {
+    "domain": "geology",
+    "category": "natural landform",
+    "function": "release magma, ash, and gases from Earth's interior",
+    "context": ["eruption", "lava", "tectonic plates", "mountains"]
+  },
+
+  "algorithm": {
+    "domain": "computer_science",
+    "category": "problem-solving procedure",
+    "function": "step-by-step instructions to solve a problem",
+    "context": ["programming", "data processing", "logic", "automation"]
+  },
+
+  "cold": {
+    "temperature_domain": {
+      "category": "temperature condition",
+      "function": "describes low heat levels",
+      "context": ["winter", "ice", "snow", "freezing"]
+    },
+
+    "health_domain": {
+      "category": "illness",
+      "function": "viral respiratory infection",
+      "context": ["cough", "sneeze", "virus", "runny nose"]
+    },
+
+    "emotional_domain": {
+      "category": "emotional state",
+      "function": "lack of warmth or friendliness",
+      "context": ["distant", "unfriendly", "mean", "rude"]
+    }
+  },
+
+  "galaxy": {
+    "domain": "astronomy",
+    "category": "cosmic structure",
+    "function": "massive system containing stars, gas, dust, and dark matter",
+    "context": ["Milky Way", "stars", "universe", "space"]
+  },
+
+  "enzyme": {
+    "domain": "biochemistry",
+    "category": "biological catalyst",
+    "function": "speed up chemical reactions in living organisms",
+    "context": ["metabolism", "proteins", "cells", "digestion"]
+  },
+
+  "car": {
+    "domain": "transportation",
+    "category": "vehicle",
+    "function": "transport people or goods on roads",
+    "context": ["driving", "roads", "engine", "travel"]
+  },
+
+  "virus": {
+    "biology_domain": {
+      "category": "microorganism",
+      "function": "infect living cells and replicate",
+      "context": ["infection", "disease", "cells", "immune system"]
+    },
+
+    "computer_domain": {
+      "category": "malicious software",
+      "function": "spread between computers and damage or disrupt systems",
+      "context": ["malware", "cybersecurity", "files", "network"]
+    }
+  },
+
+  "cell": {
+    "biology_domain": {
+      "category": "basic unit of life",
+      "function": "structural and functional unit of organisms",
+      "context": ["DNA", "organelles", "microscope", "biology"]
+    },
+
+    "technology_domain": {
+      "category": "battery unit",
+      "function": "store and supply electrical energy",
+      "context": ["battery", "electricity", "power", "electronics"]
+    },
+
+    "prison_domain": {
+      "category": "room",
+      "function": "secure space used to confine prisoners",
+      "context": ["prison", "bars", "inmate", "jail"]
+    }
+  }
+}
