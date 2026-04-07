@@ -1,5 +1,6 @@
 import random
 import json
+import subprocess
 
 from modules.embedding_engine import EmbeddingEngine
 from modules.similarity_engine import cosine_similarity
@@ -39,16 +40,31 @@ def main():
 
     while True:
 
-        guess = input("\nEnter guess: ").strip().lower()
+        raw_guess = input("\nEnter guess: ").strip()
 
-        # validation
-        if " " in guess:
-            print("Please enter only one word.")
+        # call C program
+        process = subprocess.run(
+            ["modules/preprocess.exe"],
+            input=raw_guess,
+            text=True,
+            capture_output=True
+        )
+
+        output = process.stdout.strip()
+
+        # check result
+        if output == "INVALID":
+            print("Invalid input. Try again.")
             continue
 
-        if not guess.isalpha():
-            print("Please use letters only.")
+        # extract processed word
+        if output.startswith("VALID:"):
+            guess = output.split(":")[1]
+        else:
+            print("Unexpected error.")
             continue
+
+        print("Processed guess:", guess)
 
         # get vectors
         guess_vec = embedding_engine.get_vector(guess)
