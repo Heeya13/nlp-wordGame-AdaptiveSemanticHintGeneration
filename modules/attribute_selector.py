@@ -1,45 +1,39 @@
 import random
 
 
-def get_attribute(word_data, hint_level, selected_domain=None):
+def get_attribute(word_data, hint_level, selected_domain=None, used_values=None):
 
-    # If the word has multiple domains, switch to the selected one
+    if used_values is None:
+        used_values = set()
+
+    # domain handling
     if selected_domain is not None:
         domain_name = selected_domain.replace("_domain", "")
         word_data = word_data[selected_domain]
     else:
         domain_name = None
 
-    # LOW hint
+    # LOW
     if hint_level == "LOW":
-
         if selected_domain is not None:
-            attribute_type = "domain"
-            attribute_value = domain_name
+            return "domain", domain_name
         else:
-            attribute_type = "category"
-            attribute_value = word_data.get("category")
+            return "category", word_data.get("category")
 
-    # MEDIUM hint
+    # MEDIUM (context)
     elif hint_level == "MEDIUM":
-
-        attribute_type = "context"
-
         context_list = word_data.get("context", [])
 
-        if len(context_list) > 0:
-            attribute_value = random.choice(context_list)
-        else:
-            attribute_value = None
+        # remove used ones
+        available = [c for c in context_list if c not in used_values]
 
-    # HIGH hint
+        if not available:
+            return None, None
+
+        return "context", random.choice(available)
+
+    # HIGH
     elif hint_level == "HIGH":
+        return "function", word_data.get("function")
 
-        attribute_type = "function"
-        attribute_value = word_data.get("function")
-
-
-    else:
-        return None, None
-
-    return attribute_type, attribute_value
+    return None, None

@@ -37,17 +37,41 @@ void stem_word(char word[]) {
         return;
     }
 
-    // ES
-    if (len > 3 && strcmp(word + len - 2, "es") == 0) {
+    // ex: studies → study
+    if (len > 4 && strcmp(word + len - 3, "ies") == 0) {
+        word[len - 3] = 'y';
         word[len - 2] = '\0';
         return;
     }
 
-    // S
+    // remove 'es' only for common plural forms
+    if (len > 4 && strcmp(word + len - 2, "es") == 0) {
+        char prev = word[len - 3];
+
+        if (prev == 'x' || prev == 's' || prev == 'z' ||
+            (len > 4 && word[len - 4] == 'c' && prev == 'h') ||  // "ches"
+            (len > 4 && word[len - 4] == 's' && prev == 'h')) {  // "shes"
+
+            word[len - 2] = '\0';
+            return;
+        }
+    }
+    
+    // remove 's' only for simple plurals like "cats"
     if (len > 3 && word[len - 1] == 's') {
+
+        // DON'T touch words ending in these patterns
+        if (strcmp(word + len - 2, "us") == 0 ||   // virus
+            strcmp(word + len - 2, "ss") == 0 ||   // class
+            strcmp(word + len - 2, "is") == 0) {   // this
+            return;
+        }
+
         word[len - 1] = '\0';
         return;
     }
+
+    
 }
 
 int main() {

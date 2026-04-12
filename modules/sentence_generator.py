@@ -1,15 +1,15 @@
-import random
 from modules.hint_strategy import get_hint_level
 from modules.domain_selector import DomainSelector
 from modules.attribute_selector import get_attribute
-
+from modules.memory_module import MemoryModule
+import random
 
 class SentenceGenerator:
 
     def __init__(self):
         self.domain_selector = DomainSelector()
+        self.memory = MemoryModule()
 
-        # Template Mapping Layer
         self.templates = {
             "category": [
                 "This word belongs to the category of {}.",
@@ -26,8 +26,9 @@ class SentenceGenerator:
                 "Its main purpose is to {}.",
                 "It helps to {}."
             ],
-            "color": [
-                "This word is usually {} in color."
+            "domain": [
+                "This word is related to {}.",
+                "It is commonly used in {}."
             ],
             "definition": [
                 "This word means {}.",
@@ -35,15 +36,12 @@ class SentenceGenerator:
             ]
         }
 
-        # Memory for adaptive hints
-        self.previous_domains = set()
-
     def generate_hint(self, word_data, guess, similarity, embedding_engine):
 
-        # 🔹 1. Hint Strategy
-        hint_level = get_hint_level(similarity)
+        # 🔹 get level from max similarity
+        hint_level = get_hint_level(self.memory.max_similarity)
 
-        # 🔹 2. Domain Selection (avoid repetition)
+        # 🔹 domain selection
         if isinstance(word_data, str):
             selected_domain = None
         else:
@@ -53,32 +51,41 @@ class SentenceGenerator:
                 embedding_engine
             )
 
+        # 🔹 try levels (no downgrade)
+        levels = ["LOW", "MEDIUM", "HIGH"]
+        start_index = levels.index(hint_level)
 
-        # 🔹 3. Attribute Selection
-        if isinstance(word_data, str):
-            attribute_type = "definition"
-            attribute_value = word_data
-        else:
-            attribute_type, attribute_value = get_attribute(
+        for lvl in levels[start_index:]:
+
+            # get attribute
+            attr_type, attr_value = get_attribute(
                 word_data,
-                hint_level,
-                selected_domain
+                lvl,
+                selected_domain,
+                used_values={v for (_, v) in self.memory.used_hints}
             )
 
-        # 🔹 4. Template Mapping
-        if attribute_type in self.templates:
-            templates = self.templates[attribute_type]
-        else:
-            return f"This word is related to {attribute_value}.", hint_level
+            if attr_type is None or attr_value is None:
+                continue
 
-        # 🔹 5. Adaptive Hint Strength
-        if hint_level == "LOW":
-            template = templates[0]
-        elif hint_level == "MEDIUM":
-            template = templates[min(1, len(templates)-1)]
-        else:  # HIGH
-            template = templates[-1]
+            # check repetition
+            if self.memory.is_used(attr_type, attr_value):
+                continue
 
-        sentence = template.format(attribute_value)
+            # store in memory
+            self.memory.add_hint(attr_type, attr_value)
 
-        return sentence, hint_level
+            # template
+            templates = self.templates.get(attr_type, ["This word is related to {}."])
+
+            if lvl == "LOW":
+                template = random.choice(templates[:2])
+            elif lvl == "MEDIUM":
+                template = random.choice(templates)
+            else:
+                template = random.choice(templates[-2:])
+
+            return template.format(attr_value), lvl
+
+        # 🔴 nothing left
+        return "No more hints available.", hint_level

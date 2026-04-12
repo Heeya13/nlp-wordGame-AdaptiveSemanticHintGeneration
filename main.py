@@ -4,6 +4,7 @@ import subprocess
 
 from modules.similarity_engine import cosine_similarity
 from modules.sentence_generator import SentenceGenerator
+from modules.percentage_module import similarity_to_percentage
 
 sentence_generator = SentenceGenerator()
 
@@ -83,23 +84,29 @@ def main():
             print("Unexpected error.")
             continue
 
-<<<<<<< HEAD
         print("Processed guess:", guess)
 
         # get vectors
-=======
-        #  GET VECTORS
->>>>>>> 75703a440d15ed6fba8d4f13b76ee919d50b3252
         guess_vec = embedding_engine.get_vector(guess)
         target_vec = embedding_engine.get_vector(target_word)
 
         similarity = cosine_similarity(guess_vec, target_vec)
 
-        # Handle unknown words (mainly for GloVe)
         if similarity is None:
             print("Word not in vocabulary.")
             continue
 
+        # update memory
+        sentence_generator.memory.update_similarity(similarity)
+
+        # 👉 ADD THIS
+        current_percentage = similarity_to_percentage(similarity)
+
+        max_percentage = similarity_to_percentage(
+            sentence_generator.memory.get_max_similarity()
+        )
+
+        # generate hint
         sentence, hint_level = sentence_generator.generate_hint(
             word_data,
             guess,
@@ -111,6 +118,10 @@ def main():
         print("Hint level:", hint_level)
         print("Hint:", sentence)
 
+        # 👉 NOW this works
+        print("Closeness:", current_percentage, "%")
+        print("Best so far:", max_percentage, "%")
+        
         if guess == target_word:
             print("Correct! You found the word.")
             break
