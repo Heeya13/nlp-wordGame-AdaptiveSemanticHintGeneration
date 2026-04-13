@@ -41,6 +41,7 @@ void stem_word(char word[]) {
     if (len > 4 && strcmp(word + len - 3, "ies") == 0) {
         word[len - 3] = 'y';
         word[len - 2] = '\0';
+        word[len - 1] = '\0';   
         return;
     }
 

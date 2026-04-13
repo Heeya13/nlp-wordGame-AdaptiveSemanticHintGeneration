@@ -1,2 +1,3 @@
 def similarity_to_percentage(similarity):
-    return round(similarity * 100, 1)
+    percentage = (similarity + 1) / 2 * 100
+    return round(percentage, 1)

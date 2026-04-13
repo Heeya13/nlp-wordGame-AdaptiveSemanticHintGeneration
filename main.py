@@ -5,6 +5,7 @@ import subprocess
 from modules.similarity_engine import cosine_similarity
 from modules.sentence_generator import SentenceGenerator
 from modules.percentage_module import similarity_to_percentage
+from modules.spell_check import spell_check_word
 
 sentence_generator = SentenceGenerator()
 
@@ -85,6 +86,17 @@ def main():
             continue
 
         print("Processed guess:", guess)
+
+        # spell check only for GloVe
+        if choice == "1":
+            corrected = spell_check_word(guess, embedding_engine)
+
+            if corrected and corrected != guess:
+                print(f"I hope you meant: {corrected}")
+                guess = corrected
+            elif corrected is None:
+                print("No confident correction found.")
+                continue
 
         # get vectors
         guess_vec = embedding_engine.get_vector(guess)
